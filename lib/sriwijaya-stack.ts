@@ -47,7 +47,6 @@ export class SriwijayaStack extends Stack {
         memorySize: 128,
         entry: join(__dirname, '..', 'src', 'refundPartnerBalance.ts'),
         handler: 'handler',
-        functionName: 'sriwijaya-refundPartnerBalance',
       }
     );
 
@@ -56,6 +55,20 @@ export class SriwijayaStack extends Stack {
         batchSize: 10,
       })
     );
+
+    const lambdaToSns = new NodejsFunction(this, 'lambdaToSnsFn', {
+      runtime: Runtime.NODEJS_14_X,
+      timeout: Duration.seconds(3),
+      memorySize: 128,
+      entry: join(__dirname, '..', 'src', 'lambdaToSns.ts'),
+      handler: 'handler',
+      environment: {
+        SNS_TOPIC_ARN: topic.topicArn,
+        REGION: 'ap-southeast-1',
+      },
+    });
+
+    topic.grantPublish(lambdaToSns);
 
     new CfnOutput(this, 'snsTopicArn', {
       value: topic.topicArn,

@@ -2,7 +2,7 @@ import { APIGatewayProxyResultV2, SQSEvent } from 'aws-lambda';
 
 async function handler(event: SQSEvent): Promise<APIGatewayProxyResultV2> {
   // Test dead letter queue
-  throw new Error('throwing an error');
+  // throw new Error('throwing an error');
 
   const messages = event.Records.map((record) => {
     const body = JSON.parse(record.body) as {
