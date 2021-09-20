@@ -24,6 +24,7 @@
   "dependencies": {
     "@aws-sdk/client-sns": "^3.31.0",
     "aws-cdk-lib": "2.0.0-rc.21",
+    "aws-sdk": "^2.989.0",
     "constructs": "^10.0.0"
   }
 }

@@ -7,5 +7,6 @@ node_modules
 .cdk.staging
 cdk.out
 
-note.txt
-command.txt
+reference
+sample-data
+request.http
