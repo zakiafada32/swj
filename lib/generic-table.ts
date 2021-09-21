@@ -5,7 +5,7 @@ import { NodejsFunction } from 'aws-cdk-lib/lib/aws-lambda-nodejs';
 export interface TableProps {
   tableName: string;
   primaryKey: string;
-  secondaryIndex?: string;
+  secondaryIndexes?: string[];
 }
 
 export class GenericTable {
@@ -41,14 +41,16 @@ export class GenericTable {
   }
 
   private addSecondaryIndexes() {
-    if (this.props.secondaryIndex) {
-      this.table.addGlobalSecondaryIndex({
-        indexName: this.props.secondaryIndex,
-        partitionKey: {
-          name: this.props.secondaryIndex,
-          type: AttributeType.STRING,
-        },
-      });
+    if (this.props.secondaryIndexes) {
+      for (const secondaryIndex of this.props.secondaryIndexes) {
+        this.table.addGlobalSecondaryIndex({
+          indexName: secondaryIndex,
+          partitionKey: {
+            name: secondaryIndex,
+            type: AttributeType.STRING,
+          },
+        });
+      }
     }
   }
 }

@@ -10,3 +10,5 @@ cdk.out
 reference
 sample-data
 request.http
+.vscode
+debug

@@ -1,6 +1,6 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult, Context } from 'aws-lambda';
 import { DynamoDB } from 'aws-sdk';
-import { addCorsHeader } from './utils';
+import { addCorsHeader } from '../utils/utils';
 
 const TABLE_NAME = 'PartnerData';
 const dbClient = new DynamoDB.DocumentClient();

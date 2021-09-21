@@ -7,7 +7,7 @@ import { GenericTable } from './generic-table';
 export interface LambdaProps {
   name: string;
   path: string;
-  table?: GenericTable;
+  tableList?: GenericTable[];
 }
 
 export class GenericLambda {
@@ -39,8 +39,10 @@ export class GenericLambda {
   }
 
   private grantAccessTable() {
-    if (this.props.table) {
-      this.props.table.grantTableRight(this.lambdaFunction);
+    if (this.props.tableList) {
+      for (const table of this.props.tableList) {
+        table.grantTableRight(this.lambdaFunction);
+      }
     }
   }
 }
