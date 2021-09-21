@@ -1,6 +1,6 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult, Context } from 'aws-lambda';
 import { DynamoDB } from 'aws-sdk';
-import { addCorsHeader, getEventBody, MissingFieldError, validatePartnerData } from './utils';
+import { addCorsHeader, getEventBody, MissingFieldError, validatePartnerData } from '../utils/utils';
 
 const TABLE_NAME = 'PartnerData';
 const dbClient = new DynamoDB.DocumentClient();
@@ -16,9 +16,27 @@ export async function handler(event: APIGatewayProxyEvent, context: Context): Pr
     const body = getEventBody(event);
     const partner = validatePartnerData(body);
 
+    const alreadyExist = await dbClient
+      .scan({
+        TableName: TABLE_NAME,
+        Limit: 1,
+        ExpressionAttributeNames: {
+          '#key': 'name',
+        },
+        ExpressionAttributeValues: {
+          ':value': partner.name,
+        },
+        FilterExpression: '#key = :value',
+      })
+      .promise();
+
+    if (alreadyExist.Items !== undefined && alreadyExist.Items.length > 0) {
+      throw new Error('Partner name already exist');
+    }
+
     await dbClient
       .put({
-        TableName: TABLE_NAME!,
+        TableName: TABLE_NAME,
         Item: partner,
       })
       .promise();
