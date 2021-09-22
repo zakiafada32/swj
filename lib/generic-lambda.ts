@@ -4,10 +4,14 @@ import { NodejsFunction } from 'aws-cdk-lib/lib/aws-lambda-nodejs';
 import { join } from 'path';
 import { GenericTable } from './generic-table';
 
+interface Envirenment {
+  [key: string]: string;
+}
 export interface LambdaProps {
   name: string;
   path: string;
   tableList?: GenericTable[];
+  environment?: Envirenment;
 }
 
 export class GenericLambda {
@@ -34,7 +38,12 @@ export class GenericLambda {
       handler: 'handler',
       runtime: Runtime.NODEJS_14_X,
       functionName: lambdaId,
-      environment: {},
+      environment: {
+        ...this.props.environment,
+      },
+      bundling: {
+        minify: true,
+      },
     });
   }
 
