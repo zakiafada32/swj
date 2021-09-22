@@ -12,21 +12,27 @@ import { GenericTable } from './generic-table';
 export class SriwijayaStack extends Stack {
   // everything about endpoint
   // create root url
-  private api = new RestApi(this, 'Sriwijaya');
+  private restApi = new RestApi(this, 'Sriwijaya', {
+    deployOptions: {
+      stageName: 'dev',
+    },
+  });
   private corsOption: ResourceOptions = {
     defaultCorsPreflightOptions: {
       allowOrigins: Cors.ALL_ORIGINS,
       allowMethods: Cors.ALL_METHODS,
     },
   };
-  // endpoint http://root/partner/
-  private partnerResource = this.api.root.addResource('partner', this.corsOption);
+  // endpoint https://root/partner/
+  private partnerResource = this.restApi.root.addResource('partner', this.corsOption);
 
   // everything about dynamodb
   private partnerData = new GenericTable(this, {
     tableName: 'PartnerData',
     primaryKey: 'id',
   });
+
+  // everything about sns
 
   constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
@@ -77,7 +83,7 @@ export class SriwijayaStack extends Stack {
     });
     partnerBalanceRefunded.lambdaFunction.addEventSource(new SqsEventSource(partnerBalanceRefundedQueue));
 
-    // Prepaid order succeed
+    // Prepaid order succeed lambda
     const prepaidOrderSucceedDLQ = new sqs.Queue(this, 'prepaidOrderSucceedDLQ');
     const prepaidOrderSucceedQueue = new sqs.Queue(this, 'prepaidOrderSucceedQueue', {
       deadLetterQueue: {
