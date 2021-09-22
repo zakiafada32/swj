@@ -2,7 +2,6 @@ import { APIGatewayProxyEvent, APIGatewayProxyResult, Context } from 'aws-lambda
 import { DynamoDB } from 'aws-sdk';
 import { addCorsHeader } from '../utils/utils';
 
-const TABLE_NAME = 'PartnerData';
 const dbClient = new DynamoDB.DocumentClient();
 
 export async function handler(event: APIGatewayProxyEvent, context: Context): Promise<APIGatewayProxyResult> {
@@ -14,7 +13,7 @@ export async function handler(event: APIGatewayProxyEvent, context: Context): Pr
   try {
     const queryResponse = await dbClient
       .scan({
-        TableName: TABLE_NAME!,
+        TableName: process.env.TABLE_NAME!,
       })
       .promise();
     result.body = JSON.stringify(queryResponse.Items);
