@@ -37,6 +37,10 @@ export class SriwijayaStack extends Stack {
       name: 'partnerCreate',
       path: join('src', 'lambda', 'partnerCreate.ts'),
       tableList: [this.partnerData],
+      environment: {
+        TABLE_NAME: this.partnerData.props.tableName,
+        PRIMARY_KEY: this.partnerData.props.primaryKey,
+      },
     });
     const partnerCreateIntegration = new LambdaIntegration(partnerCreate.lambdaFunction);
     this.partnerResource.addMethod('POST', partnerCreateIntegration);
@@ -46,6 +50,10 @@ export class SriwijayaStack extends Stack {
       name: 'findAllPartner',
       path: join('src', 'lambda', 'partnerFindAll.ts'),
       tableList: [this.partnerData],
+      environment: {
+        TABLE_NAME: this.partnerData.props.tableName,
+        PRIMARY_KEY: this.partnerData.props.primaryKey,
+      },
     });
     const partnerReadIntegration = new LambdaIntegration(partnerFindAll.lambdaFunction);
     this.partnerResource.addMethod('GET', partnerReadIntegration);
@@ -62,6 +70,10 @@ export class SriwijayaStack extends Stack {
       name: 'partnerBalanceRefunded',
       path: join('src', 'lambda', 'partnerBalanceRefunded.ts'),
       tableList: [this.partnerData],
+      environment: {
+        TABLE_NAME: this.partnerData.props.tableName,
+        PRIMARY_KEY: this.partnerData.props.primaryKey,
+      },
     });
     partnerBalanceRefunded.lambdaFunction.addEventSource(new SqsEventSource(partnerBalanceRefundedQueue));
 
@@ -76,7 +88,6 @@ export class SriwijayaStack extends Stack {
     const prepaidOrderSucceed = new GenericLambda(this, {
       name: 'prepaidOrderSucceed',
       path: join('src', 'lambda', 'prepaidOrderSucceed.ts'),
-      tableList: [this.partnerData],
     });
     prepaidOrderSucceed.lambdaFunction.addEventSource(new SqsEventSource(prepaidOrderSucceedQueue));
   }

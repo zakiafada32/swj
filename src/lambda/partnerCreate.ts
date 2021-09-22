@@ -2,7 +2,6 @@ import { APIGatewayProxyEvent, APIGatewayProxyResult, Context } from 'aws-lambda
 import { DynamoDB } from 'aws-sdk';
 import { addCorsHeader, getEventBody, MissingFieldError, validatePartnerData } from '../utils/utils';
 
-const TABLE_NAME = 'PartnerData';
 const dbClient = new DynamoDB.DocumentClient();
 
 export async function handler(event: APIGatewayProxyEvent, context: Context): Promise<APIGatewayProxyResult> {
@@ -18,7 +17,7 @@ export async function handler(event: APIGatewayProxyEvent, context: Context): Pr
 
     const alreadyExist = await dbClient
       .scan({
-        TableName: TABLE_NAME,
+        TableName: process.env.TABLE_NAME!,
         Limit: 1,
         ExpressionAttributeNames: {
           '#key': 'name',
@@ -36,7 +35,7 @@ export async function handler(event: APIGatewayProxyEvent, context: Context): Pr
 
     await dbClient
       .put({
-        TableName: TABLE_NAME,
+        TableName: process.env.TABLE_NAME!,
         Item: partner,
       })
       .promise();
